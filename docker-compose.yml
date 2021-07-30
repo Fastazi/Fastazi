@@ -1,0 +1,11 @@
+version: '3.8'
+
+services:
+  fastazi:
+    container_name: fastazi
+    image: fastazi_img
+    # Local directories that should be attached to the container
+    volumes:
+      - ./tools:/home/fastazi/tools
+      - ./metrics:/home/fastazi/metrics
+      - ./scripts:/home/fastazi/scripts

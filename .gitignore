@@ -1,0 +1,13 @@
+.DS_Store
+repos/
+FAST/
+defects4j/
+get-pip.py
+tools/__pycache__/
+metrics/*
+
+*skipped.txt
+
+tools/build_files/*
+
+tex/
