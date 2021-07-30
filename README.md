@@ -5,6 +5,8 @@ Tool for combining Test Case Selection and & Test Case Prioritization.
 This is the results and replication package for the paper titled 
 *Combining File-based Selection and Similarity-based Prioritization 
 for Improved Software Regression Testing*, submitted to ICSE22.
+Please do not fork this repository or otherwise attempt to modify
+its contents before the paper is peer-reviewed and published.
 
 Utilizes 
 [Ekstazi](http://ekstazi.org) for selection and 
@@ -37,10 +39,6 @@ Our experiments were run on the following setup:
   * Available memory: 8GB
   * Available swap: 2GB
 
-The easiest way to run the experiments is using Docker. 
-With Docker installed, you can follow these steps to 
-run the experiments.
-
 ### 1. Clone the repository
 
 ```bash
@@ -48,7 +46,19 @@ git clone [url]
 cd fastazi
 ```
 
-### 2. Create the Docker image
+The easiest way to run the experiments is using Docker.
+To do so, follow the steps in section 2, then skip to section 4.
+Otherwise, follow the steps in section 3 to install the
+required dependencies without Docker.
+
+### 2. Setup using Docker
+
+#### 2.1 Installing Docker
+
+Please follow the [Docker Engine installation instructions](https://docs.docker.com/engine/install/)
+from the Docker website according to your operating system.
+
+#### 2.2. Create the Docker image
 ```bash
 docker build -t fastazi_img --rm .
 ```
@@ -61,7 +71,7 @@ See `Dockerfile` for the full contents of this image.
 This image will be made publicly available through Docker 
 Hub after the paper is published.
 
-### 3. Run the Docker container
+#### 2.3. Run the Docker container
 ```bash
 docker compose run fastazi
 ```
@@ -70,6 +80,10 @@ access to the `scripts`, `tools` and `metrics` directories.
 
 Upon completion, your terminal will be running Bash within
 the container at the `/home/fastazi/` path.
+
+### 3. Manual setup
+
+
 
 ### 4. Run the experiments
 To run the experiments for all available subjects using their
