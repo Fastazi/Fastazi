@@ -145,3 +145,57 @@ for changes to be considered in chronological order.
 Therefore, we reverse the numerical order of these projects
 (e.g. Chart is processed from 26 to 1), so the results are
 in chronological order.
+
+## Table description and legend
+
+Within the `results` and `metrics` directories, you will find files 
+following this pattern for each experiment subject:
+
+* `avg.csv`: Reports average results over the 30 repetitions for each 
+  software version and test suite.
+* `raw.csv`: Reports the individual results for each of the 30 repetitions
+  for each software version and test suite.
+* `budget_all.csv`: Provides results considering budget, with 100% defined
+  as the size of the entire test suite.
+* `budget_selected.csv`: Provides results considering budget, with 100% defined
+  as the size of the test suite selected by Ekstazi on each version.
+* `time.csv`: Shows the time taken by each step of the approaches on each
+  software version.
+* `time_avg.csv`: Averages of the time taken by each step of the approaches across
+  all software versions.
+
+The metrics reported in these tables are:
+* `Test count`: The number of tests in a particular version of the test suite.
+* `APFD`: The non-normalized APFD result.
+* `APFDf`: APFD normalized according to the full test suite size (used in the paper).
+* `TTFF`: The non-normalized TTFF result.
+* `pTTFF`: TTFF normalized according to the full test suite size (used in the paper).
+* `Misses`: The number of times, out of the 30 repetitions, that the test suite was unable to detect the fault.
+* `Hit`: 1 if the fault was detected in all 30 repetitions; 0 otherwise.
+* `Misses`: The number of times, out of the 30 repetitions, that the test suite was able to detect the fault.
+
+The test suites compared in these tables are:
+* `Ekstazi+random`: 30 permutations of the test suite selected by Ekstazi.
+* `FAST-pw`: 30 prioritizations of the test suite using FAST-pw.
+* `Fastazi-S`: The sequential version of Fastazi (used in the paper).
+* `Fastazi-P`: The parallel version of Fastazi (briefly described in the paper).
+* `Random`: 30 permutations of the entire test suite.
+
+## References from the paper to this repository
+
+Throughout the paper, the † symbol is used to indicate when additional information 
+can be found in this repository. This list serves to guide a reader from certain
+parts of the paper to the relevant piece of data.
+
+* In the paper, the sequential version of Fastazi (`Fastazi-S`) is used primarily. 
+  In this repository, the parallel version is found under the name `Fastazi-P`.
+* In the paper, TTFF and APFD results are normalized according to the size of the
+  full test suite, as a matter of fairness towards the approaches that select test
+  cases. In this repository, the normalized versions of the metrics are named `pTTFF`
+  and `APFDf`, while the standard names refer to the non-normalized values.
+* This repository contains the instructions for preparing a Docker container identical
+  to the one used for the experiments.
+* The `results` directory contains the full datasets used to generate the plots found
+  in the paper.
+* The `results` directory also contains the full results of the statistical analysis,
+  including the numerical values of the Vargha and Delaney measures.
