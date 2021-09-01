@@ -63,97 +63,15 @@ def loadTestSuite(selected, input_dir):
 
     return TS, IDmap
 
-
-# def loadTestSuitev2(input_dir):
-#     lsh_files = glob(os.path.join(input_dir, "*.lsh"))
-#     TS = OrderedDict()
-#     tcID = 0
-#     IDmap = {}
-#     for lshf in lsh_files:
-#         tcstr, _ = os.path.splitext(os.path.basename(lshf))
-
-#         with open(lshf, 'rb') as f:
-#             TS[tcID] = pickle.load(f)
-#         IDmap[tcID] = tcstr
-#         tcID += 1
-    
-#     return TS, IDmap
-
-# def loadTestSuite(input_file, bbox=False, k=5):
-#     """INPUT
-#     (str)input_file: path of input file
-
-#     OUTPUT
-#     (dict)TS: key=tc_ID, val=set(covered lines)
-#     """
-#     TS = defaultdict()
-#     with open(input_file) as fin:
-#         tcID = 1
-#         for tc in fin:
-#             if bbox:
-#                 TS[tcID] = tc[:-1]
-#             else:
-#                 TS[tcID] = set(tc[:-1].split())
-#             tcID += 1
-#     shuffled = TS.items()
-#     random.shuffle(shuffled)
-#     TS = OrderedDict(shuffled)
-#     if bbox:
-#         TS = lsh.kShingles(TS, k)
-#     return TS
-
-
-# def storeSignatures(input_file, sigfile, hashes, k=5):
-#     with open(sigfile, "w") as sigfile:
-#         with open(input_file) as fin:
-#             tcID = 1
-#             for tc in fin:
-#                 if bbox:
-#                     # shingling
-#                     tc_ = tc[:-1]
-#                     tc_shingles = set()
-#                     for i in range(len(tc_) - k + 1):
-#                         tc_shingles.add(hash(tc_[i:i + k]))
-
-#                     sig = lsh.tcMinhashing((tcID, set(tc_shingles)), hashes)
-#                 else:
-#                     tc_ = tc[:-1].split()
-#                     sig = lsh.tcMinhashing((tcID, set(tc_)), hashes)
-#                 for hash_ in sig:
-#                     sigfile.write(repr(unpack('>d', hash_)[0]))
-#                     sigfile.write(" ")
-#                 sigfile.write("\n")
-#                 tcID += 1
-
-
-# def loadSignatures(input_file):
-#     """INPUT
-#     (str)input_file: path of input file
-
-#     OUTPUT
-#     (dict)TS: key=tc_ID, val=set(covered lines), sigtime"""
-#     sig = {}
-#     start = time.perf_counter()
-#     with open(input_file, "r") as fin:
-#         tcID = 1
-#         for tc in fin:
-#             sig[tcID] = [pack('>d', float(i)) for i in tc[:-1].split()]
-#             tcID += 1
-#     return sig, time.perf_counter() - start
-
-
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
 
 # lsh + pairwise comparison with candidate set
-def fast_pw(r, b, test_suite, k=5):
+def fast_pw(r, b, test_suite):
     """INPUT
     (str)input_file: path of input file
     (int)r: number of rows
     (int)b: number of bands
-    (bool)bbox: True if BB prioritization
-    (int)k: k-shingle size (for BB prioritization)
-    (bool)memory: if True keep signature in memory and do not store them to file
 
     OUTPUT
     (list)P: prioritized test suite
@@ -163,33 +81,10 @@ def fast_pw(r, b, test_suite, k=5):
 
     hashes = [lsh.hashFamily(i) for i in range(n)]
 
-    # test_suite = loadTestSuitev2(input_dir=input_file)
-    # print(test_suite)
-    # test_suite = loadTestSuite(input_file, bbox=bbox, k=k)
-    # generate minhashes signatures
     mh_t = time.perf_counter()
     tcs_minhashes = deepcopy(test_suite)
-    # tcs_minhashes = {tc[0]: lsh.tcMinhashing(tc, hashes)
-                    #  for tc in test_suite.items()}
     mh_time = time.perf_counter() - mh_t
     ptime_start = time.perf_counter()
-
-    # else:
-    #     # loading input file and generating minhashes signatures
-    #     sigfile = input_file.replace(".txt", ".sig")
-    #     sigtimefile = "{}_sigtime.txt".format(input_file.split(".")[0])
-    #     if not os.path.exists(sigfile):
-    #         mh_t = time.perf_counter()
-    #         storeSignatures(input_file, sigfile, hashes, bbox, k)
-    #         mh_time = time.perf_counter() - mh_t
-    #         with open(sigtimefile, "w") as fout:
-    #             fout.write(repr(mh_time))
-    #     else:
-    #         with open(sigtimefile, "r") as fin:
-    #             mh_time = eval(fin.read().replace("\n", ""))
-
-    #     ptime_start = time.perf_counter()
-    #     tcs_minhashes, load_time = loadSignatures(sigfile)
 
     tcs = set(tcs_minhashes.keys())
 
@@ -260,15 +155,12 @@ def fast_pw(r, b, test_suite, k=5):
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
 
-def fast_(selsize, r, b, test_suite, k=5):
+def fast_(selsize, r, b, test_suite):
     """INPUT
     (str)input_file: path of input file
     (fun)selsize: size of candidate set
     (int)r: number of rows
     (int)b: number of bands
-    (bool)bbox: True if BB prioritization
-    (int)k: k-shingle size (for BB prioritization)
-    (bool)memory: if True keep signature in memory and do not store them to file
 
     OUTPUT
     (list)P: prioritized test suite
@@ -278,30 +170,10 @@ def fast_(selsize, r, b, test_suite, k=5):
 
     hashes = [lsh.hashFamily(i) for i in range(n)]
 
-    # test_suite = loadTestSuitev2(input_dir=input_file)
-    # test_suite = loadTestSuite(input_file, bbox=bbox, k=k)
-    # generate minhashes signatures
     mh_t = time.perf_counter()
     tcs_minhashes = deepcopy(test_suite)
     mh_time = time.perf_counter() - mh_t
     ptime_start = time.perf_counter()
-
-    # else:
-    #     # loading input file and generating minhashes signatures
-    #     sigfile = input_file.replace(".txt", ".sig")
-    #     sigtimefile = "{}_sigtime.txt".format(input_file.split(".")[0])
-    #     if not os.path.exists(sigfile):
-    #         mh_t = time.perf_counter()
-    #         storeSignatures(input_file, sigfile, hashes, bbox, k)
-    #         mh_time = time.perf_counter() - mh_t
-    #         with open(sigtimefile, "w") as fout:
-    #             fout.write(repr(mh_time))
-    #     else:
-    #         with open(sigtimefile, "r") as fin:
-    #             mh_time = eval(fin.read().replace("\n", ""))
-
-    #     ptime_start = time.perf_counter()
-    #     tcs_minhashes, load_time = loadSignatures(sigfile)
 
     tcs = set(tcs_minhashes.keys())
 

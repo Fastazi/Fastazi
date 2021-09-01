@@ -25,6 +25,7 @@ along with this source.  If not, see <http://www.gnu.org/licenses/>.
 # Common auxiliary functions
 
 import os
+from constants import *
 
 def read_file(file_path):
     with open(file_path, "r") as f:
@@ -66,7 +67,7 @@ def fully_qualified_name(file_path):
 
     while path != '':
         path, name = os.path.split(path)
-        if name == 'tests' or name == 'test' or name == 'java': # or name == 'source' or name == 'experimental':
+        if name == 'tests' or name == 'test' or name == 'java':
             return '.'.join(qualified)
         qualified = [name] + qualified
     
@@ -110,7 +111,7 @@ def apfd(prioritization, faults):
     Furthermore, m can only be 1 (fault detected) or 0 (fault undetected).
     """
 
-    numerator = ttff(prioritization, faults)
+    numerator = ttff_abs(prioritization, faults)
     
     n, m = len(prioritization), (1 if numerator > 0 else 0)
     apfd = 1.0 - (numerator / (n * m)) + (1.0 / (2 * n)) if m > 0 else 0.0
@@ -118,9 +119,9 @@ def apfd(prioritization, faults):
     return apfd
 
 
-def apfdf(full_suite_len, suite_ttff):
+def napfd(full_suite_len, suite_ttff):
     """
-    Variation of APFD that considers the full test suite length.
+    Variation of APFD that normalizes the result based on the full test suite length.
     """
 
     numerator = suite_ttff
@@ -131,21 +132,17 @@ def apfdf(full_suite_len, suite_ttff):
     return apfd
 
 
-def ttff(suite, faults):
+def ttff_abs(suite, faults):
     count = 1
     for test_case in suite:
         if test_case in faults:
             return count
-        # for fault in faults:
-        #     if fault == test_case:
-        #         return count
         count += 1
     
     return 0
 
 
-def pttff(full_suite_len, suite_ttff):
-    # if suite_ttff == "NA": return "NA"
+def ttff(full_suite_len, suite_ttff):
     return float(suite_ttff) / full_suite_len
 
 
@@ -157,24 +154,21 @@ def gather_time(results_path):
 
     time_path = os.path.join(results_path, "time", str_fast_pw+"_time.txt")
     result[str_prio_p_time] = read_time(time_path)
-    # time_path = os.path.join(results_path, "time", str_fast_1+"_time.txt")
-    # time[version][str_fast_1] = read_number(time_path)
 
-    time_path = os.path.join(results_path, "time", str_efast_pw+"_time.txt")
+    time_path = os.path.join(results_path, "time", str_fastazi_s+"_time.txt")
     result[str_prio_s_time] = read_time(time_path)
-    # time_path = os.path.join(results_path, "time", str_efast_1+"_time.txt")
-    # time[version][str_efast_1] = read_number(time_path)
 
-    time_path = os.path.join(results_path, "time", str_fastazi_pw+"_time.txt")
+    time_path = os.path.join(results_path, "time", str_fastazi_p+"_time.txt")
     result[str_comb_time] = read_time(time_path)
-    # time_path = os.path.join(results_path, "time", str_fastazi_1+"_time.txt")
-    # time[version][str_fastazi_1] = read_number(time_path)
 
     time_path = os.path.join(results_path, "time", "fast_preparation_time.txt")
     result[str_fast_prep_time] = read_time(time_path)
 
     time_path = os.path.join(results_path, "time", "build_time.txt")
     result[str_build_time] = read_time(time_path)
+
+    time_path = os.path.join(results_path, "time", "build_time.txt")
+    result[str_test_time] = read_time(time_path)
 
     result[str_fastazi_p_time] = max((result[str_build_time] + result[str_sel_time]), (result[str_fast_prep_time] + result[str_prio_p_time])) + result[str_comb_time]
     result[str_fastazi_s_time] = max((result[str_build_time] + result[str_sel_time]), result[str_fast_prep_time]) + result[str_prio_s_time]
@@ -204,64 +198,3 @@ def time_avg(time):
         avg[suite] = s[suite]/c[suite]
     
     return avg
-
-# Common variables
-
-str_ekstazi = "ekstazi_rand"
-str_fast_pw = "fast_pw"
-str_fast_1 = "fast_1"
-str_efast_pw = "efast_pw"
-str_efast_1 = "efast_1"
-str_fastazi_pw = "fastazi_pw"
-str_fastazi_1 = "fastazi_1"
-str_remaining_pw = "remaining_pw"
-str_remaining_1 = "remaining_1"
-str_random = "random"
-suites = [str_ekstazi, 
-          str_fast_pw, # str_fast_1, 
-          str_efast_pw, # str_efast_1,
-          str_fastazi_pw, # str_fastazi_1, 
-        #   str_remaining_pw, str_remaining_1,
-          str_random]
-
-str_sel_time = "sel_time"
-str_prio_p_time = "prio_p_time"
-str_prio_s_time = "prio_s_time"
-str_comb_time = "comb_time"
-str_fast_prep_time = "fast_prep_time"
-str_fastazi_p_time = "fastazi_p_time"
-str_fastazi_s_time = "fastazi_s_time"
-str_build_time = "build_time"
-
-display_names = {
-    str_ekstazi: "Ekstazi+random",
-    str_fast_pw: "FAST-pw",
-    str_fast_1: "FAST-1",
-    str_efast_pw: "Fastazi-S",
-    str_efast_1: "Fastazi-S_1",
-    str_fastazi_pw: "Fastazi-P",
-    str_fastazi_1: "Fastazi-P_1",
-    str_random: "Random",
-    str_sel_time: "Selection",
-    str_fast_prep_time: "FAST preparation",
-    str_prio_p_time: "Full prioritization",
-    str_prio_s_time: "Sel. prioritization",
-    str_comb_time: "Combination",
-    str_fastazi_p_time: "Fastazi-P",
-    str_fastazi_s_time: "Fastazi-S",
-    str_build_time: "Build time"
-}
-
-str_adj = "adj_budget"
-str_apfd = "apfd"
-str_apfdf = "apfd_full"
-str_ttff = "ttff"
-str_pttff = "pttff"
-str_len = "suite_len"
-metrics = [str_adj, str_len, str_apfd, str_apfdf, str_ttff, str_pttff]
-
-str_result = "result"
-str_misses = "misses"
-
-percentages = [.10, .20, .25, .30, .40, .50, .60, .70, .75, .80, .90, 1]
-iterations = range(1, 31)

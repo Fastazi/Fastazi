@@ -43,7 +43,7 @@ compile() {
         fi
 
         if [ ${run_tests} = "test" ]; then
-            ant test -silent > /dev/null
+            /usr/bin/time -o ${results_dir}/time/test_time.txt -f '%E' ant test -silent > /dev/null
         else
             /usr/bin/time -o ${results_dir}/time/build_time.txt -f '%E' ant compile-tests -silent > /dev/null
         fi
@@ -59,7 +59,7 @@ compile() {
         cd ${working_dir}
 
         if [ ${run_tests} = "test" ]; then
-            mvn install > /dev/null
+            /usr/bin/time -o ${results_dir}/time/test_time.txt -f '%E' mvn test > /dev/null
         else
             /usr/bin/time -o ${results_dir}/time/build_time.txt -f '%E' mvn install -DskipTests=true > /dev/null
         fi
@@ -72,15 +72,10 @@ create_dirs() {
     local results_dir=${@}
 
     mkdir ${results_dir}
-    mkdir ${results_dir}/ekstazi
+    mkdir ${results_dir}/ekstazi_rand
     mkdir ${results_dir}/fast_pw
-    mkdir ${results_dir}/fast_1
-    mkdir ${results_dir}/efast_pw
-    mkdir ${results_dir}/efast_1
-    mkdir ${results_dir}/fastazi_pw
-    mkdir ${results_dir}/fastazi_1
-    mkdir ${results_dir}/remaining_pw
-    mkdir ${results_dir}/remaining_1
+    mkdir ${results_dir}/fastazi_s
+    mkdir ${results_dir}/fastazi_p
     mkdir ${results_dir}/random
     mkdir ${results_dir}/time
 }
@@ -134,7 +129,6 @@ sed -i -e 's/.clz//g' ${results_dir}/all_tests.txt
 sed -i -e 's/test-results//g' ${results_dir}/all_tests.txt
 
 cp ${results_dir}/all_tests.txt ${results_dir}/affected_tests.txt
-# diff --unchanged-group-format="" ${results_dir}/unaffected_tests.txt ${results_dir}/all_tests.txt > ${results_dir}/affected_tests.txt
 
 # Get FAST prioritization
 echo "========================================="
@@ -148,8 +142,7 @@ echo "========================================="
 echo "Combining results for ${project} version ${1}"
 echo "========================================="
 python3 ${tools_dir}/ekstazi_shuffle.py ${results_dir}
-python3 ${tools_dir}/combine.py ${results_dir} pw
-python3 ${tools_dir}/combine.py ${results_dir} 1
+python3 ${tools_dir}/combine.py ${results_dir}
 
 cp -r ${working_dir}/.ekstazi ${results_dir}/ekstazi_dir
 cp -r ${working_dir}/.fast ${results_dir}/fast_dir
@@ -212,8 +205,7 @@ for i in $(seq $(expr ${start} + 1) ${end}); do
     echo "Combining results for ${project} version ${i}"
     echo "========================================="
     python3 ${tools_dir}/ekstazi_shuffle.py ${results_dir}
-    python3 ${tools_dir}/combine.py ${results_dir} pw
-    python3 ${tools_dir}/combine.py ${results_dir} 1
+    python3 ${tools_dir}/combine.py ${results_dir}
 
     cp -r ${working_dir}/.ekstazi ${results_dir}/ekstazi_dir
     cp -r ${working_dir}/.fast ${results_dir}/fast_dir
@@ -224,7 +216,6 @@ done
 echo "========================================="
 echo "Calculating metrics for ${project}"
 echo "========================================="
-# python3 ${tools_dir}/metric.py ./repos ${start} ${end} ./metrics ${project}
 python3 ${tools_dir}/metric.py ./repos ${start} ${end} ./metrics ${project} all
 python3 ${tools_dir}/metric.py ./repos ${start} ${end} ./metrics ${project} selected
 

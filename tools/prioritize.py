@@ -41,6 +41,7 @@ from copy import deepcopy
 
 from fast import fast_pw, fast_, loadTestSuite
 from functions import read_file, save_file
+from constants import *
 # import metric
 
 import fast_parser
@@ -67,7 +68,7 @@ NOTE:
 
 working_dir = '.'
 output_dir = '.'
-method = "fast_pw"
+method = str_fast_pw
 
 test_suite = {}
 id_map = {}
@@ -79,78 +80,38 @@ def bboxPrioritization(iteration):
     global id_map
 
     # Standard FAST parameters
-    k, r, b = 5, 1, 10
+    r, b = 1, 10
     
     print(" Run", iteration)
     
-    if method == "fast_pw":
+    if method == str_fast_pw:
         stime, ptime, prioritization = fast_pw(
-                r, b, test_suite, k=k)
+                r, b, test_suite)
     else:
         def one_(x): return 1
         stime, ptime, prioritization = fast_(
-                one_, r, b, test_suite, k=k)
+                one_, r, b, test_suite)
             
 
     # writePrioritizedOutput(output_dir, prioritization, iteration)
     out_path = os.path.join(output_dir, str(iteration)+".txt")
     save_file(out_path, map(lambda p: id_map[p], prioritization))
+    out_path = os.path.join(output_dir, str(iteration)+"_ids.txt")
+    save_file(out_path, map(lambda p: "{}".format(p), prioritization))
 
 
     print("  Progress: 100%  ")
     print("  Running time:", stime + ptime)
-    # running_time[iteration] = stime + ptime
     print("")
     return stime + ptime
-
-# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
-
-# def writePrioritizedOutput(path, prioritization, iteration):
-#     out_path = os.path.join(path, str(iteration)+".txt")
-#     with open(out_path, "w") as out_file:
-#         out_file.write("\n".join(prioritization))
-#         for p in prioritization:
-#             out_file.write(id_map[p]+"\n")
-
-# def writePrioritization(path, name, ctype, run, prioritization):
-#     fout = "{}/{}-{}-{}.pickle".format(path, name, ctype, run+1)
-#     pickle.dump(prioritization, open(fout, "wb"))
-
-
-# def writeOutput(outpath, ctype, res, javaFlag):
-#     if javaFlag:
-#         name, stimes, ptimes, apfds = res
-#         fileout = "{}/{}-{}.tsv".format(outpath, name, ctype)
-#         with open(fileout, "w") as fout:
-#             fout.write("SignatureTime\tPrioritizationTime\tAPFD\n")
-#             for st, pt, apfdlist in zip(stimes, ptimes, apfds):
-#                 for apfd in apfdlist:
-#                     tsvLine = "{}\t{}\t{}\n".format(st, pt, apfd)
-#                     fout.write(tsvLine)
-#     else:
-#         name, stimes, ptimes, apfds = res
-#         fileout = "{}/{}-{}.tsv".format(outpath, name, ctype)
-#         with open(fileout, "w") as fout:
-#             fout.write("SignatureTime\tPrioritizationTime\tAPFD\n")
-#             for st, pt, apfd in zip(stimes, ptimes, apfds):
-#                 tsvLine = "{}\t{}\t{}\n".format(st, pt, apfd)
-#                 fout.write(tsvLine)
-
-# def read_file(file_path):
-#     test_cases = []
-#     with open(file_path, "r") as f:
-#         return map(lambda line: line.strip(), f.readlines())
-#     return test_cases
-
-# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
 
 if __name__ == "__main__":
 
-    if len(sys.argv) == 5:
-        benchmark = sys.argv[4]
-    else:
-        benchmark = "false"
+    # if len(sys.argv) == 5:
+    #     benchmark = sys.argv[4]
+    # else:
+    #     benchmark = "false"
     if len(sys.argv) > 3 and len(sys.argv) <= 5:
         num_iterations = int(sys.argv[3])
     else:
@@ -161,14 +122,6 @@ if __name__ == "__main__":
     else:
         exit(0)
 
-    # If selection failed, skip this version
-    # if (not os.path.exists(os.path.join(working_dir, ".ekstazi"))):
-    #     print("Selection failed, skipping prioritization")
-    #     exit(0)
-
-    # measure time
-    # fast_parser.parseTests(working_dir)
-
     # ====
     fast_dir = os.path.join(working_dir,'.fast')
     all_path = os.path.join(results_dir, "all_tests.txt")
@@ -176,29 +129,14 @@ if __name__ == "__main__":
     test_suite, id_map = loadTestSuite(all_tests, input_dir=fast_dir)
 
     # FAST-pw on entire test suite
-    output_dir = os.path.join(results_dir, "fast_pw")
+    output_dir = os.path.join(results_dir, str_fast_pw)
     if not os.path.exists(output_dir):
         os.makedirs(output_dir)
     num_cores = multiprocessing.cpu_count()
     with Pool(num_cores) as pool:
         running_time = pool.map(bboxPrioritization, range(1, num_iterations + 1))
 
-    total_time["fast_pw"] = deepcopy(running_time)
-
-    if benchmark == "true":
-        # When benchmarking, we only want to run fast_pw.
-        exit(0)
-
-    # FAST-1 on entire test suite
-    output_dir = os.path.join(results_dir, "fast_1")
-    if not os.path.exists(output_dir):
-        os.makedirs(output_dir)
-    method = "fast_1"
-    num_cores = multiprocessing.cpu_count()
-    with Pool(num_cores) as pool:
-        running_time = pool.map(bboxPrioritization, range(1, num_iterations + 1))
-
-    total_time["fast_1"] = deepcopy(running_time)
+    total_time[str_fast_pw] = deepcopy(running_time)
 
     # ====
     selected_path = os.path.join(results_dir,"affected_tests.txt")
@@ -206,29 +144,18 @@ if __name__ == "__main__":
         selected = read_file(selected_path)
         test_suite, id_map = loadTestSuite(selected, input_dir=fast_dir)
 
-        # FAST-pw on selected test suite
-        output_dir = os.path.join(results_dir, "efast_pw")
+        # FAST-pw on selected test suite (a.k.a. Fastazi-S)
+        output_dir = os.path.join(results_dir, str_fastazi_s)
         if not os.path.exists(output_dir):
             os.makedirs(output_dir)
-        method = "fast_pw"
+        method = str_fast_pw
         num_cores = multiprocessing.cpu_count()
         with Pool(num_cores) as pool:
             running_time = pool.map(bboxPrioritization, range(1, num_iterations + 1))
 
-        total_time["efast_pw"] = deepcopy(running_time)
-
-        # FAST-1 on selected test suite
-        output_dir = os.path.join(results_dir, "efast_1")
-        if not os.path.exists(output_dir):
-            os.makedirs(output_dir)
-        method = "fast_1"
-        num_cores = multiprocessing.cpu_count()
-        with Pool(num_cores) as pool:
-            running_time = pool.map(bboxPrioritization, range(1, num_iterations + 1))
-
-        total_time["efast_1"] = deepcopy(running_time)
+        total_time[str_fastazi_s] = deepcopy(running_time)
     else:
-        print("Could not use 'efast'.")
+        print("Could not use '"+display_names[str_fastazi_s]+"'.")
 
     for suite, running_time in total_time.items():
         output_path = os.path.join(results_dir, "time", suite+"_time.txt")
