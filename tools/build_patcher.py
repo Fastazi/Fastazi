@@ -85,7 +85,7 @@ def patch_mvn(xml_path):
         version = dependency.find('wl:version', namespaces=ns)
         if version is None:
             version = ET.SubElement(dependency, 'version')
-        version.text = "4.12"
+        version.text = "4.13.2"
 
     build = project.find('wl:build', namespaces=ns)
     plugins = build.find('wl:plugins', namespaces=ns)

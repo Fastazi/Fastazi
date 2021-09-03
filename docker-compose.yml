@@ -9,3 +9,4 @@ services:
       - ./tools:/home/fastazi/tools
       - ./metrics:/home/fastazi/metrics
       - ./scripts:/home/fastazi/scripts
+      - ./replication:/home/fastazi/replication

@@ -26,19 +26,18 @@ import os
 import sys
 
 from functions import read_file, save_file
+from constants import *
 import time
 
 if __name__ == '__main__':
     working_dir = '.'
-    if len(sys.argv) == 3:
+    if len(sys.argv) == 2:
         working_dir = sys.argv[1]
-        method = sys.argv[2]
     
     selected_path = os.path.join(working_dir, "affected_tests.txt")
 
-    prioritized_dir = os.path.join(working_dir, "fast_"+method)
-    combined_dir = os.path.join(working_dir, "fastazi_"+method)
-    remaining_dir = os.path.join(working_dir, "remaining_"+method)
+    prioritized_dir = os.path.join(working_dir, str_fast_pw)
+    combined_dir = os.path.join(working_dir, str_fastazi_p)
 
     selected = read_file(selected_path)
 
@@ -50,22 +49,17 @@ if __name__ == '__main__':
         prioritized = read_file(prioritized_path)
 
         combined = []
-        remaining = []
+        # Take the selected tests according to the prioritized order.
         for test in prioritized:
             if test in selected:
                 combined.append(test)
-            else:
-                remaining.append(test)
 
         combined_path = os.path.join(combined_dir, str(i)+".txt")
         save_file(combined_path, combined)
 
-        remaining_path = os.path.join(remaining_dir, str(i)+".txt")
-        save_file(remaining_path, remaining)
-
         iteration_time.append(time.perf_counter() - start)
 
-    output_path = os.path.join(working_dir, "time", "fastazi_"+method+"_time.txt")
+    output_path = os.path.join(working_dir, "time", str_fastazi_p+"_time.txt")
     avg_time = sum(iteration_time)/len(iteration_time)
     with open(output_path, "w") as output:
         output.write(str(avg_time))

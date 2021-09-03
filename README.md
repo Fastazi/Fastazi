@@ -72,7 +72,7 @@ Hub after the paper is published.
 
 #### 2.3. Run the Docker container
 ```bash
-docker compose run fastazi
+docker compose run --rm fastazi
 ```
 This creates a Docker container from `fastazi_img` that has
 access to the `scripts`, `tools` and `metrics` directories.
@@ -165,10 +165,9 @@ following this pattern for each experiment subject:
 
 The metrics reported in these tables are:
 * `Test count`: The number of tests in a particular version of the test suite.
-* `APFD`: The non-normalized APFD result.
-* `APFDf`: APFD normalized according to the full test suite size (used in the paper).
-* `TTFF`: The non-normalized TTFF result.
-* `pTTFF`: TTFF normalized according to the full test suite size (used in the paper).
+* `NAPFD`: APFD normalized according to the full test suite size (used in the paper).
+* `TTFF (abs)`: The non-normalized TTFF result.
+* `TTFF`: TTFF normalized according to the full test suite size (used in the paper).
 * `Misses`: The number of times, out of the 30 repetitions, that the test suite was unable to detect the fault.
 * `Hit`: 1 if the fault was detected in all 30 repetitions; 0 otherwise.
 * `Misses`: The number of times, out of the 30 repetitions, that the test suite was able to detect the fault.
@@ -190,8 +189,8 @@ parts of the paper to the relevant piece of data.
   In this repository, results from the parallel version are found under the name `Fastazi-P`.
 * In the paper, TTFF and APFD results are normalized according to the size of the
   full test suite, as a matter of fairness towards the approaches that select test
-  cases. In this repository, the normalized versions of the metrics are named `pTTFF`
-  and `APFDf`, while the standard names refer to the non-normalized values.
+  cases. In this repository, the normalized version of the metric is named `TTFF`, 
+  while `TTFF (abs)` refers to the non-normalized values.
 * This repository contains the instructions for preparing a Docker container identical
   to the one used for the experiments.
 * The `results` directory contains the full datasets used to generate the plots found

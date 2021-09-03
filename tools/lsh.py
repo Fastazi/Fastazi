@@ -11,6 +11,9 @@ This script is responsible for computing the LSH signatures of test cases.
 The `kShingle` function was added, which computes the signature of 
 a single test case, rather than of an entire suite.
 
+Ensure the environment variable PYTHONHASHSEED is set to 0
+to ensure replicability of results.
+
 ================================================================
 
 This is free software: you can redistribute it and/or modify
@@ -33,15 +36,15 @@ import itertools
 
 import xxhash
 
+
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+# SHINGLING
+
 def kShingle(tc, k):
     shingle = set()
     for i in range(len(tc) - k + 1):
         shingle.add(hash(tc[i:i + k]))
     return shingle
-
-
-# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
-# SHINGLING
 
 def kShingles(TS, k):
     """INPUT
@@ -106,7 +109,6 @@ def LSHBucket(minhashes, b, r, n):
     (dict(dict))LSHBuckets: key=band, val=dict(key=col_sig, val=set(tc_IDs))"""
     assert(b * r == n)
 
-    # key=band, val=dict(key=col_sig, val=set(tc_IDs))
     bucket = defaultdict(dict)
     i = 0
     while i < n:  # for each band
