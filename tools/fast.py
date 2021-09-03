@@ -76,7 +76,6 @@ def fast_pw(r, b, test_suite):
     OUTPUT
     (list)P: prioritized test suite
     """
-    random.seed(2)
     n = r * b  # number of hash functions
 
     hashes = [lsh.hashFamily(i) for i in range(n)]
@@ -165,7 +164,6 @@ def fast_(selsize, r, b, test_suite):
     OUTPUT
     (list)P: prioritized test suite
     """
-    random.seed(2)
     n = r * b  # number of hash functions
 
     hashes = [lsh.hashFamily(i) for i in range(n)]

@@ -1,4 +1,4 @@
-# Fastazi
+# Comparing and Combining File-based Selection and Similarity-based Prioritization towards Regression Test Orchestration
 
 Comparison between Test Case Selection, Test Case Prioritization and their combination.
 
@@ -18,13 +18,50 @@ Utilizes [Defects4J](https://github.com/rjust/defects4j) for experiment subjects
 These were the results of our experiments with the tool.
 * The `scripts` directory contains shell scripts that automate the execution of experiments.
 * The `metrics` directory is where the output of the experiments are located after execution.
+* The `replication` directory contains the scripts and data to reproduce the figures and tables
+  seen in the paper.
 * The `tools` directory contains:
   * Modified source code for FAST in Python;
   * The JARs for the Ekstazi Maven and Ant plugins;
   * Additional Python scripts needed for running the experiments.
 * `Dockerfile` and `docker-compose.yml` files to streamline the experiments using Docker.
 
-## Running the experiments
+## Viewing the data
+
+There are three ways of interacting with the data in this repository:
+
+1. View the static Jupyter notebook containing the analysis of the results of our
+  execution of the experiment at `replication/Fastazi.ipynb`.
+
+2. Perform the analysis dynamically using a prepared [Google Colab environment](https://colab.research.google.com/drive/1h2MMu9Cdpp9COwCOGG1bKZ_pFQUqGVFn?usp=sharing). This allows further analysis of the data, if desired.
+
+3. Run the statistical tests and generate the plots locally on your machine. For that,
+ you must prepare environments in R and Python:
+  * Install R following the steps on the [official website](https://www.r-project.org).
+  * Install Python following the steps on the [official website](https://www.python.org).
+  * Install the required R packages running:
+  ```
+  cd replication
+  Rscript requirements.r
+  ```
+  * Install the required Python packages running:
+  ```
+  pip3 install requirements.txt
+  ```
+  * Each step of the research questions is in a separate script. Run them in order:
+  ```
+  Rscript RQ1.r
+  python3 RQ1-effsize.py
+  Rscript RQ2a.r
+  Rscript RQ2b.r
+  Rscript RQ3.r
+  ```
+
+Additionally, if desired, the full experiments can be executed by 
+following the steps below. Keep in mind that a full execution can
+take several hours of computation time.
+
+## Running the full experiments
 
 Our experiments were run on the following setup:
 * Host computer: Mac mini (2018)
@@ -35,8 +72,8 @@ Our experiments were run on the following setup:
 * Docker engine: v20.10.6
   * Image: Ubuntu 20.04 LTS
   * Available CPU: 12 cores
-  * Available memory: 8GB
-  * Available swap: 2GB
+  * Available memory: 16GB
+  * Available swap: 4GB
 
 ### 1. Clone the repository
 
@@ -80,11 +117,7 @@ access to the `scripts`, `tools` and `metrics` directories.
 Upon completion, your terminal will be running Bash within
 the container at the `/home/fastazi/` path.
 
-### 3. Manual setup
-
-
-
-### 4. Run the experiments
+### 3. Run the experiments
 To run the experiments for all available subjects using their
 recommended versions (replicating the results from the paper), run:
 ```bash
@@ -166,11 +199,11 @@ following this pattern for each experiment subject:
 The metrics reported in these tables are:
 * `Test count`: The number of tests in a particular version of the test suite.
 * `NAPFD`: APFD normalized according to the full test suite size (used in the paper).
-* `TTFF (abs)`: The non-normalized TTFF result.
-* `TTFF`: TTFF normalized according to the full test suite size (used in the paper).
+* `TTFF`: The non-normalized TTFF result.
+* `pTTFF`: TTFF normalized according to the full test suite size (used in the paper).
 * `Misses`: The number of times, out of the 30 repetitions, that the test suite was unable to detect the fault.
 * `Hit`: 1 if the fault was detected in all 30 repetitions; 0 otherwise.
-* `Misses`: The number of times, out of the 30 repetitions, that the test suite was able to detect the fault.
+* `HitCount`: The number of times, out of the 30 repetitions, that the test suite was able to detect the fault.
 
 The test suites compared in these tables are:
 * `Ekstazi+random`: 30 permutations of the test suite selected by Ekstazi.
@@ -181,19 +214,22 @@ The test suites compared in these tables are:
 
 ## References from the paper to this repository
 
-Throughout the paper, the † symbol is used to indicate when additional information 
+Throughout the paper, footnotes indicate when additional information 
 can be found in this repository. This list serves to guide a reader from certain
 parts of the paper to the relevant piece of data.
 
-* In the paper, the sequential version of Fastazi (`Fastazi-S`) is used primarily. 
+2- In the paper, the sequential version of Fastazi (`Fastazi-S`) is used primarily. 
   In this repository, results from the parallel version are found under the name `Fastazi-P`.
-* In the paper, TTFF and APFD results are normalized according to the size of the
+
+5- The section *Experiment Subjects* details the subject versions used and discusses reasons why some versions were omitted.
+
+6- In the paper, TTFF and APFD results are normalized according to the size of the
   full test suite, as a matter of fairness towards the approaches that select test
   cases. In this repository, the normalized version of the metric is named `TTFF`, 
   while `TTFF (abs)` refers to the non-normalized values.
-* This repository contains the instructions for preparing a Docker container identical
+
+9- This repository contains the instructions for preparing a Docker container identical
   to the one used for the experiments.
-* The `results` directory contains the full datasets used to generate the plots found
+
+10- The `results` directory contains the full datasets used to generate the plots found
   in the paper.
-* The `results` directory also contains the full results of the statistical analysis,
-  including the numerical values of the Vargha and Delaney measures.

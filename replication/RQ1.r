@@ -12,10 +12,7 @@ give.n <- function(x){
 }
 #==================================================
 
-subject="all"
-target_file = "avg.csv"
-
-results_loc <- paste(subject, target_file, sep="/")
+results_loc <- "subjects/all/RQ1.csv"
 
 approaches <- c("Ekstazi+random","Fastazi-S","FAST-pw","Random")
 v_factor_levels <- unique(approaches)

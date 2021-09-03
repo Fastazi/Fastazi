@@ -1,4 +1,4 @@
-# library(pgirmess) # kruskalmc
+#library(pgirmess) # kruskalmc
 library(agricolae) # kruskal with tukey groups
 library(rcompanion)  # multiVDA
 library(effsize) # VD.A
@@ -8,7 +8,7 @@ library(rstatix) # wilcox_test
 # Preparation
 #==================================================
 #LOAD RESULTS FILE
-raw_results <- read.table("RQ3.csv", header=TRUE, sep=",")
+raw_results <- read.table("subjects/all/RQ3.csv", header=TRUE, sep=",")
 
 #==================================================
 # Normality Test (Time)
@@ -23,7 +23,7 @@ shapiro.test(raw_results$Time)
 kruskal.test(Time ~ Group, data=raw_results)
 
 #Kruskal-Wallis rank sum test (MULTIPLE COMPARISON)
-# kruskalmc(Time ~ Group, data=raw_results)
+#kruskalmc(Time ~ Group, data=raw_results)
 
 out <- kruskal(raw_results$Time, raw_results$Group)
 out

@@ -66,7 +66,5 @@ if __name__ == '__main__':
     if len(sys.argv) == 2:
         working_dir = sys.argv[1]
     
-    random.seed(2)
-
     ekstazi_rand(working_dir)
     randomize(working_dir)

@@ -1,23 +1,3 @@
-# install.packages("rcompanion")
-# install.packages("effsize")
-# install.packages("readr")
-# install.packages("ggplot2")
-# install.packages("nortest") # ad.test
-# install.packages("pgirmess") # kruskalmc
-# install.packages("agricolae") # kruskal with tukey groups
-# install.packages("rstatix") # dunn test, wilcox_test
-install.packages("wesanderson")
-# install.packages("RColorBrewer")
-
-# library(readr)
-# library(ggplot2)
-# library(nortest, pos=17) # ad.test
-# library(pgirmess) # kruskalmc
-# library(agricolae) # kruskal with tukey groups
-# library(rstatix) # dunn test, wilcox_test
-# library(wesanderson)
-# library(RColorBrewer)
-
 library(wesanderson)
 
 draft_mode <- FALSE

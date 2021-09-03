@@ -10,3 +10,5 @@ tools/__pycache__/
 tools/build_files/*
 
 tex/
+
+.ipynb_checkpoints
