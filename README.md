@@ -145,7 +145,7 @@ Therefore, we reverse the numerical order of these projects
 (e.g. Chart is processed from 26 to 1), so the results are
 in chronological order.
 
-## Table description and legend
+## Results description and legend
 
 Within the `results` and `metrics` directories, you will find files 
 following this pattern for each experiment subject:
@@ -187,7 +187,7 @@ can be found in this repository. This list serves to guide a reader from certain
 parts of the paper to the relevant piece of data.
 
 * In the paper, the sequential version of Fastazi (`Fastazi-S`) is used primarily. 
-  In this repository, the parallel version is found under the name `Fastazi-P`.
+  In this repository, results from the parallel version are found under the name `Fastazi-P`.
 * In the paper, TTFF and APFD results are normalized according to the size of the
   full test suite, as a matter of fairness towards the approaches that select test
   cases. In this repository, the normalized versions of the metrics are named `pTTFF`
