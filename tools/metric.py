@@ -150,6 +150,13 @@ if __name__ == '__main__':
                     suite_ttff = ttff_abs(t, faults)
                     suite_napfd = napfd(full_suite_len, suite_ttff)
                     suite_pttff = ttff(full_suite_len, suite_ttff)
+
+                    # if iteration == 1 and suite == str_fast_pw and percentage == 1.0:
+                    #     print(suite_apfd)
+                    #     print(suite_napfd)
+                    #     print(suite_ttff)
+                    #     print(len(t))
+                    #     print(t, faults)
                     suite_ttff = suite_ttff if suite_ttff > 0 else "NA"
                     suite_pttff = suite_pttff if suite_pttff > 0 else "NA"
 
@@ -171,12 +178,14 @@ if __name__ == '__main__':
     if not os.path.exists(output_dir):
         os.makedirs(output_dir)
     
+    # exit(0)
+
     filename = "budget"
     filename += "_all" if budget_calculation == "all" else "_selected"
     filename += "_raw.csv"
     output_path = os.path.join(output_dir, filename)
     with open(output_path, "w") as output:
-        output.write("Project, Version, Iteration, Budget, Suite, Test count, NAPFD, TTFF (abs), TTFF\n")
+        output.write("Project, Version, Iteration, Budget, Suite, Test count, APFDf, TTFF, pTTFF\n")
 
         for version, version_results in results.items():
             for iteration, iteration_results in version_results.items():
@@ -202,7 +211,7 @@ if __name__ == '__main__':
     filename += "_avg.csv"
     output_path = os.path.join(output_dir, filename)
     with open(output_path, "w") as output:
-        output.write("Project, Version, Budget, Suite, RelBudget, Test count, NAPFD, TTFF (abs), TTFF, Misses, Hit, HitCount\n")
+        output.write("Project, Version, Budget, Suite, RelBudget, Test count, APFDf, TTFF, pTTFF, Misses, Hit, HitCount\n")
         
         for version, version_results in avg.items():
             for percentage, percentage_results in version_results[str_result].items():
@@ -226,7 +235,7 @@ if __name__ == '__main__':
     if budget_calculation == "all":
         output_path = os.path.join(output_dir, "raw.csv")
         with open(output_path, "w") as output:
-            output.write("Project, Version, Iteration, Suite, Test count, NAPFD, TTFF (abs), TTFF\n")
+            output.write("Project, Version, Iteration, Suite, Test count, APFDf, TTFF, pTTFF\n")
 
             for version, version_results in results.items():
                 for iteration, iteration_results in version_results.items():
@@ -245,7 +254,7 @@ if __name__ == '__main__':
 
         output_path = os.path.join(output_dir, "avg.csv")
         with open(output_path, "w") as output:
-            output.write("Project, Version, Suite, Test count, NAPFD, TTFF (abs), TTFF, Misses, Hit, HitCount\n")
+            output.write("Project, Version, Suite, Test count, APFDf, TTFF, pTTFF, Misses, Hit, HitCount\n")
             
             for version, version_results in avg.items():
                 for suite, suite_results in version_results[str_result]["100%"].items():

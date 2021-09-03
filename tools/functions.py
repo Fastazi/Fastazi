@@ -167,9 +167,11 @@ def gather_time(results_path):
     time_path = os.path.join(results_path, "time", "build_time.txt")
     result[str_build_time] = read_time(time_path)
 
-    time_path = os.path.join(results_path, "time", "build_time.txt")
+    time_path = os.path.join(results_path, "time", "test_time.txt")
     result[str_test_time] = read_time(time_path)
 
+    result[str_ekstazi_time] = result[str_build_time] + result[str_sel_time]
+    result[str_fast_time] = max((result[str_build_time] + result[str_sel_time]), (result[str_fast_prep_time] + result[str_prio_p_time]))
     result[str_fastazi_p_time] = max((result[str_build_time] + result[str_sel_time]), (result[str_fast_prep_time] + result[str_prio_p_time])) + result[str_comb_time]
     result[str_fastazi_s_time] = max((result[str_build_time] + result[str_sel_time]), result[str_fast_prep_time]) + result[str_prio_s_time]
 
@@ -177,9 +179,10 @@ def gather_time(results_path):
 
 
 def time_avg(time):
-    suites = [str_build_time, str_sel_time, 
+    suites = [str_build_time, str_test_time, str_sel_time, 
               str_fast_prep_time, str_comb_time, 
               str_prio_p_time, str_prio_s_time, 
+              str_ekstazi_time, str_fast_time,
               str_fastazi_p_time, str_fastazi_s_time]
     avg = {}
     s = {} # sum

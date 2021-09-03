@@ -96,8 +96,8 @@ def bboxPrioritization(iteration):
     # writePrioritizedOutput(output_dir, prioritization, iteration)
     out_path = os.path.join(output_dir, str(iteration)+".txt")
     save_file(out_path, map(lambda p: id_map[p], prioritization))
-    out_path = os.path.join(output_dir, str(iteration)+"_ids.txt")
-    save_file(out_path, map(lambda p: "{}".format(p), prioritization))
+    # out_path = os.path.join(output_dir, str(iteration)+"_ids.txt")
+    # save_file(out_path, map(lambda p: "{}".format(p), prioritization))
 
 
     print("  Progress: 100%  ")

@@ -14,6 +14,8 @@ str_prio_p_time = "prio_p_time"
 str_prio_s_time = "prio_s_time"
 str_comb_time = "comb_time"
 str_fast_prep_time = "fast_prep_time"
+str_ekstazi_time = "ekstazi_time"
+str_fast_time = "fast_time"
 str_fastazi_p_time = "fastazi_p_time"
 str_fastazi_s_time = "fastazi_s_time"
 str_build_time = "build_time"
@@ -30,6 +32,8 @@ display_names = {
     str_prio_p_time: "Full prioritization",
     str_prio_s_time: "Sel. prioritization",
     str_comb_time: "Combination",
+    str_ekstazi_time: "Ekstazi",
+    str_fast_time: "FAST",
     str_fastazi_p_time: "Fastazi-P",
     str_fastazi_s_time: "Fastazi-S",
     str_build_time: "Build time",
