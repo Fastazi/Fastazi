@@ -43,7 +43,7 @@ if __name__ == '__main__':
 
     iteration_time = []
     for i in range(1, 31):
-        start = time.perf_counter()
+        # start = time.process_time()
 
         prioritized_path = os.path.join(prioritized_dir, str(i)+".txt")
         prioritized = read_file(prioritized_path)
@@ -57,9 +57,9 @@ if __name__ == '__main__':
         combined_path = os.path.join(combined_dir, str(i)+".txt")
         save_file(combined_path, combined)
 
-        iteration_time.append(time.perf_counter() - start)
+        # iteration_time.append(time.process_time() - start)
 
-    output_path = os.path.join(working_dir, "time", str_fastazi_p+"_time.txt")
-    avg_time = sum(iteration_time)/len(iteration_time)
-    with open(output_path, "w") as output:
-        output.write(str(avg_time))
+    # output_path = os.path.join(working_dir, "time", str_fastazi_p+"_time.txt")
+    # avg_time = sum(iteration_time)/len(iteration_time)
+    # with open(output_path, "w") as output:
+    #     output.write(str(avg_time))

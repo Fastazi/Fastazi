@@ -80,10 +80,10 @@ def fast_pw(r, b, test_suite):
 
     hashes = [lsh.hashFamily(i) for i in range(n)]
 
-    mh_t = time.perf_counter()
+    mh_t = time.process_time()
     tcs_minhashes = deepcopy(test_suite)
-    mh_time = time.perf_counter() - mh_t
-    ptime_start = time.perf_counter()
+    mh_time = time.process_time() - mh_t
+    ptime_start = time.process_time()
 
     tcs = set(tcs_minhashes.keys())
 
@@ -146,7 +146,7 @@ def fast_pw(r, b, test_suite):
         tcs -= set([selected_tc])
         del tcs_minhashes[selected_tc]
 
-    ptime = time.perf_counter() - ptime_start
+    ptime = time.process_time() - ptime_start
 
     return mh_time, ptime, prioritized_tcs[1:]
 
@@ -168,10 +168,10 @@ def fast_(selsize, r, b, test_suite):
 
     hashes = [lsh.hashFamily(i) for i in range(n)]
 
-    mh_t = time.perf_counter()
+    mh_t = time.process_time()
     tcs_minhashes = deepcopy(test_suite)
-    mh_time = time.perf_counter() - mh_t
-    ptime_start = time.perf_counter()
+    mh_time = time.process_time() - mh_t
+    ptime_start = time.process_time()
 
     tcs = set(tcs_minhashes.keys())
 
@@ -230,6 +230,6 @@ def fast_(selsize, r, b, test_suite):
             tcs -= set([selected_tc])
             del tcs_minhashes[selected_tc]
 
-    ptime = time.perf_counter() - ptime_start
+    ptime = time.process_time() - ptime_start
 
     return mh_time, ptime, prioritized_tcs[1:]

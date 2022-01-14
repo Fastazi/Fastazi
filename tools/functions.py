@@ -47,12 +47,22 @@ def save_file(file_path, data):
 def read_time(file_path):
     with open(file_path, "r") as f:
         lines = f.readlines()
+        # get CPU kernel time
         raw_number = lines[-1].strip()
         if ":" in raw_number:
             raw_number = float(raw_number.split(":")[1])
         else:
             raw_number = float(raw_number)
-        return float("{:.4f}".format(raw_number))
+        result = float("{:.4f}".format(raw_number))
+        # get CPU user time
+        raw_number = lines[-2].strip()
+        if ":" in raw_number:
+            raw_number = float(raw_number.split(":")[1])
+        else:
+            raw_number = float(raw_number)
+        result += float("{:.4f}".format(raw_number))
+        # return sum
+        return result
 
 
 def fully_qualified_name(file_path):
@@ -153,13 +163,13 @@ def gather_time(results_path):
     result[str_sel_time] = read_time(time_path)
 
     time_path = os.path.join(results_path, "time", str_fast_pw+"_time.txt")
-    result[str_prio_p_time] = read_time(time_path)
+    result[str_prio_p_time] = read_time(time_path)/num_iterations
 
     time_path = os.path.join(results_path, "time", str_fastazi_s+"_time.txt")
-    result[str_prio_s_time] = read_time(time_path)
+    result[str_prio_s_time] = read_time(time_path)/num_iterations
 
     time_path = os.path.join(results_path, "time", str_fastazi_p+"_time.txt")
-    result[str_comb_time] = read_time(time_path)
+    result[str_comb_time] = read_time(time_path)/num_iterations
 
     time_path = os.path.join(results_path, "time", "fast_preparation_time.txt")
     result[str_fast_prep_time] = read_time(time_path)

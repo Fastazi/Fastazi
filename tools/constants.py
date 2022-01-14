@@ -51,4 +51,5 @@ str_result = "result"
 str_misses = "misses"
 
 percentages = [.10, .20, .25, .30, .40, .50, .60, .70, .75, .80, .90, 1]
-iterations = range(1, 31)
+num_iterations = 30
+iterations = range(1, num_iterations+1)

@@ -112,64 +112,85 @@ if __name__ == "__main__":
     #     benchmark = sys.argv[4]
     # else:
     #     benchmark = "false"
-    if len(sys.argv) > 3 and len(sys.argv) <= 5:
-        num_iterations = int(sys.argv[3])
+    if len(sys.argv) > 4 and len(sys.argv) <= 6:
+        num_iterations = int(sys.argv[4])
     else:
         num_iterations = 30
-    if len(sys.argv) > 2 and len(sys.argv) <= 5:
-        working_dir = sys.argv[1]
-        results_dir = sys.argv[2]
+    if len(sys.argv) > 3 and len(sys.argv) <= 6:
+        what_to_prioritize = sys.argv[1]
+        working_dir = sys.argv[2]
+        results_dir = sys.argv[3]
     else:
-        exit(0)
+        print("Invalid number of arguments.")
+        exit(1)
 
-    # ====
     fast_dir = os.path.join(working_dir,'.fast')
-    all_path = os.path.join(results_dir, "all_tests.txt")
-    all_tests = read_file(all_path)
-    test_suite, id_map = loadTestSuite(all_tests, input_dir=fast_dir)
 
-    # FAST-pw on entire test suite
-    output_dir = os.path.join(results_dir, str_fast_pw)
-    if not os.path.exists(output_dir):
-        os.makedirs(output_dir)
-    num_cores = multiprocessing.cpu_count()
-    with Pool(num_cores) as pool:
-        running_time = pool.map(bboxPrioritization, range(1, num_iterations + 1))
-
-    total_time[str_fast_pw] = deepcopy(running_time)
+    if what_to_prioritize == "all":
+        suite = str_fast_pw
+        tests_path = "all_tests.txt"
+    elif what_to_prioritize == "selected":
+        suite = str_fastazi_s
+        tests_path = "affected_tests.txt"
+    else:
+        print("Invalid argument for test suite.")
+        exit(1)
 
     # ====
-    selected_path = os.path.join(results_dir,"affected_tests.txt")
-    if os.path.exists(selected_path):
-        selected = read_file(selected_path)
-        test_suite, id_map = loadTestSuite(selected, input_dir=fast_dir)
+    path = os.path.join(results_dir, tests_path)
+    if os.path.exists(path):
+        tests = read_file(path)
+        test_suite, id_map = loadTestSuite(tests, input_dir=fast_dir)
 
-        # FAST-pw on selected test suite (a.k.a. Fastazi-S)
-        output_dir = os.path.join(results_dir, str_fastazi_s)
+        # FAST-pw on entire test suite
+        output_dir = os.path.join(results_dir, suite)
         if not os.path.exists(output_dir):
             os.makedirs(output_dir)
-        method = str_fast_pw
         num_cores = multiprocessing.cpu_count()
         with Pool(num_cores) as pool:
             running_time = pool.map(bboxPrioritization, range(1, num_iterations + 1))
 
-        total_time[str_fastazi_s] = deepcopy(running_time)
+        total_time = deepcopy(running_time)
     else:
-        print("Could not use '"+display_names[str_fastazi_s]+"'.")
+        print("File not found: "+path)
+        exit(1)
 
-    for suite, running_time in total_time.items():
-        output_path = os.path.join(results_dir, "time", suite+"_time.txt")
-        avg_time = sum(running_time)/len(running_time)
-        with open(output_path, "w") as output:
-            output.write(str(avg_time))
+    # output_path = os.path.join(results_dir, "time", suite+"_time.txt")
+    # avg_time = sum(running_time)/len(running_time)
+    # with open(output_path, "w") as output:
+    #     output.write(str(avg_time))
 
-    output_path = os.path.join(results_dir, "prioritization_time.csv")
-    with open(output_path, "w") as output:
-        output.write("Suite, iteration, time")
-        for suite, running_time in total_time.items():
-            for i in range(0, len(running_time)):
-                line = "{}".format(suite)
-                line += ", {}".format(i+1)
-                line += ", {}".format(running_time[i])
-                line += "\n"
-                output.write(line)
+    # ====
+    # path = os.path.join(results_dir, "affected_tests.txt")
+    # if os.path.exists(path):
+    #     tests = read_file(path)
+    #     test_suite, id_map = loadTestSuite(tests, input_dir=fast_dir)
+
+    #     # FAST-pw on selected test suite (a.k.a. Fastazi-S)
+    #     output_dir = os.path.join(results_dir, str_fastazi_s)
+    #     if not os.path.exists(output_dir):
+    #         os.makedirs(output_dir)
+    #     num_cores = multiprocessing.cpu_count()
+    #     with Pool(num_cores) as pool:
+    #         running_time = pool.map(bboxPrioritization, range(1, num_iterations + 1))
+
+    #     total_time[str_fastazi_s] = deepcopy(running_time)
+    # else:
+    #     print("Could not use '"+display_names[str_fastazi_s]+"'.")
+
+    # for suite, running_time in total_time.items():
+    #     output_path = os.path.join(results_dir, "time", suite+"_time.txt")
+    #     avg_time = sum(running_time)/len(running_time)
+    #     with open(output_path, "w") as output:
+    #         output.write(str(avg_time))
+
+    # output_path = os.path.join(results_dir, "prioritization_time.csv")
+    # with open(output_path, "w") as output:
+    #     output.write("Suite, iteration, time")
+    #     for suite, running_time in total_time.items():
+    #         for i in range(0, len(running_time)):
+    #             line = "{}".format(suite)
+    #             line += ", {}".format(i+1)
+    #             line += ", {}".format(running_time[i])
+    #             line += "\n"
+    #             output.write(line)

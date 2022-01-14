@@ -43,9 +43,9 @@ compile() {
         fi
 
         if [ ${run_tests} = "test" ]; then
-            /usr/bin/time -o ${results_dir}/time/test_time.txt -f '%E' ant test -silent > /dev/null
+            /usr/bin/time -o ${results_dir}/time/test_time.txt -f '%U\n%S' ant test -silent > /dev/null
         else
-            /usr/bin/time -o ${results_dir}/time/build_time.txt -f '%E' ant compile-tests -silent > /dev/null
+            /usr/bin/time -o ${results_dir}/time/build_time.txt -f '%U\n%S' ant compile-tests -silent > /dev/null
         fi
   
         if [ ${project} = "Chart" ]; then
@@ -64,9 +64,9 @@ compile() {
         fi
 
         if [ ${run_tests} = "test" ]; then
-            /usr/bin/time -o ${results_dir}/time/test_time.txt -f '%E' mvn install > /dev/null
+            /usr/bin/time -o ${results_dir}/time/test_time.txt -f '%U\n%S' mvn install > /dev/null
         else
-            /usr/bin/time -o ${results_dir}/time/build_time.txt -f '%E' mvn install -DskipTests=true > /dev/null
+            /usr/bin/time -o ${results_dir}/time/build_time.txt -f '%U\n%S' mvn install -DskipTests=true > /dev/null
         fi
         
         if [ ${project} = "Gson" ]; then
@@ -137,7 +137,7 @@ compile "test"
 echo "========================================="
 echo "Selecting tests for ${project} version ${1}"
 echo "========================================="
-/usr/bin/time -o ${results_dir}/time/selection_time.txt -f '%E' ls ${compilation_dir}/.ekstazi/ > ${results_dir}/all_tests.txt
+/usr/bin/time -o ${results_dir}/time/selection_time.txt -f '%U\n%S' ls ${compilation_dir}/.ekstazi/ > ${results_dir}/all_tests.txt
 sed -i -e 's/.clz//g' ${results_dir}/all_tests.txt
 sed -i -e 's/test-results//g' ${results_dir}/all_tests.txt
 
@@ -147,15 +147,17 @@ cp ${results_dir}/all_tests.txt ${results_dir}/affected_tests.txt
 echo "========================================="
 echo "Prioritizing tests for ${project} version ${1}"
 echo "========================================="
-/usr/bin/time -o ${results_dir}/time/fast_preparation_time.txt -f '%E' python3 ${tools_dir}/fast_parser.py ${compilation_dir}
-python3 ${tools_dir}/prioritize.py ${compilation_dir} ${results_dir} 30 false
+/usr/bin/time -o ${results_dir}/time/fast_preparation_time.txt -f '%U\n%S' python3 ${tools_dir}/fast_parser.py ${compilation_dir}
+# python3 ${tools_dir}/prioritize.py ${compilation_dir} ${results_dir} 30 false
+/usr/bin/time -o ${results_dir}/time/fast_pw_time.txt -f '%U\n%S' python3 ${tools_dir}/prioritize.py all ${compilation_dir} ${results_dir} 30
+/usr/bin/time -o ${results_dir}/time/fastazi_s_time.txt -f '%U\n%S' python3 ${tools_dir}/prioritize.py selected ${compilation_dir} ${results_dir} 30
 
 # Combine the results
 echo "========================================="
 echo "Combining results for ${project} version ${1}"
 echo "========================================="
 python3 ${tools_dir}/ekstazi_shuffle.py ${results_dir}
-python3 ${tools_dir}/combine.py ${results_dir}
+/usr/bin/time -o ${results_dir}/time/fastazi_p_time.txt -f '%U\n%S' python3 ${tools_dir}/combine.py ${results_dir}
 
 cp -r ${compilation_dir}/.ekstazi ${results_dir}/ekstazi_dir
 cp -r ${compilation_dir}/.fast ${results_dir}/fast_dir
@@ -198,7 +200,7 @@ for i in $(seq $(expr ${start} + 1) ${end}); do
     echo "========================================="
     echo "Selecting tests for ${project} version ${i}"
     echo "========================================="
-    /usr/bin/time -o ${results_dir}/time/selection_time.txt -f '%E' java -cp ${tools_dir}/org.ekstazi.core-5.3.0.jar org.ekstazi.check.AffectedChecker ${working_dir}/.ekstazi/ > ${results_dir}/unaffected_tests.txt
+    /usr/bin/time -o ${results_dir}/time/selection_time.txt -f '%U\n%S' java -cp ${tools_dir}/org.ekstazi.core-5.3.0.jar org.ekstazi.check.AffectedChecker ${working_dir}/.ekstazi/ > ${results_dir}/unaffected_tests.txt
 
     echo "========================================="
     echo "Running tests for ${project} version ${i}"
@@ -215,15 +217,18 @@ for i in $(seq $(expr ${start} + 1) ${end}); do
     echo "========================================="
     echo "Prioritizing tests for ${project} version ${i}"
     echo "========================================="
-    /usr/bin/time -o ${results_dir}/time/fast_preparation_time.txt -f '%E' python3 ${tools_dir}/fast_parser.py ${compilation_dir}
-    python3 ${tools_dir}/prioritize.py ${compilation_dir} ${results_dir} 30 false
+    /usr/bin/time -o ${results_dir}/time/fast_preparation_time.txt -f '%U\n%S' python3 ${tools_dir}/fast_parser.py ${compilation_dir}
+    /usr/bin/time -o ${results_dir}/time/fast_pw_time.txt -f '%U\n%S' python3 ${tools_dir}/prioritize.py all ${compilation_dir} ${results_dir} 30
+    /usr/bin/time -o ${results_dir}/time/fastazi_s_time.txt -f '%U\n%S' python3 ${tools_dir}/prioritize.py selected ${compilation_dir} ${results_dir} 30
+    
 
     # Combine the results
     echo "========================================="
     echo "Combining results for ${project} version ${i}"
     echo "========================================="
     python3 ${tools_dir}/ekstazi_shuffle.py ${results_dir}
-    python3 ${tools_dir}/combine.py ${results_dir}
+    /usr/bin/time -o ${results_dir}/time/fastazi_p_time.txt -f '%U\n%S' python3 ${tools_dir}/combine.py ${results_dir}
+    # python3 ${tools_dir}/combine.py ${results_dir}
 
     cp -r ${compilation_dir}/.ekstazi ${results_dir}/ekstazi_dir
     cp -r ${compilation_dir}/.fast ${results_dir}/fast_dir
