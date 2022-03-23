@@ -1,5 +1,5 @@
 '''
-This file is part of an ICSE'22 submission that is currently under review.
+This file is part of an AST'22 submission that is currently under review.
 
 It is a modified version of a file from the FAST test case prioritization tool. 
 For more information visit: https://github.com/icse18-FAST/FAST.

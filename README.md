@@ -3,7 +3,7 @@
 Comparison between Test Case Selection, Test Case Prioritization and their combination.
 
 This is the results and replication package for the paper titled 
-*Comparing and Combining File-based Selection and Similarity-based Prioritization towards Regression Test Orchestration*, submitted to ICSE22.
+*Comparing and Combining File-based Selection and Similarity-based Prioritization towards Regression Test Orchestration*, submitted to AST22.
 **Please do not fork this repository or otherwise attempt to modify
 its contents before the paper is peer-reviewed and published.**
 

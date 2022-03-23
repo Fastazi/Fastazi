@@ -1,5 +1,5 @@
 '''
-This file is part of an ICSE'22 submission that is currently under review.
+This file is part of an AST'22 submission that is currently under review.
 
 ================================================================
 
