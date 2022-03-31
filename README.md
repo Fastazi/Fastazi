@@ -1,4 +1,4 @@
-# Comparing and Combining File-based Selection and Similarity-based Prioritization towards Regression Test Orchestration
+# Comparing and Combining File-based Selection and Similarity-based Prioritization towards Regression Test Orchestration (Replication Package)
 
 Comparison between Test Case Selection, Test Case Prioritization and their combination.
 
